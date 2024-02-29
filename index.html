@@ -1,11 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .box {
+            height: 20px;
+        }
+
+        .color {
+            border: 1px solid gray;
+            margin: 10px;
+        }
+    </style>
 </head>
+
 <body>
-    
+    <div id="app"></div>
+    <script>
+        /*
+            CRUD 
+            Create = lage, colors = ['red', 'green', 'blue', 'yellow']
+            Read 
+            Update 
+            Delete
+        */
+
+        // model
+        let colors = ['red', 'green', 'blue', 'yellow'];
+        let deleted = [];
+        let isAdding = false;
+
+        // view
+        updateView();
+        function updateView() {
+            let html = '';
+            for (let index = 0; index < colors.length; index++) {
+                let color = colors[index];
+                html += /*HTML*/`
+                    <div class="color">
+                        ${color} <button onclick="deleteColor(${index})">x</button>
+                        <div style="background-color: ${color}" class="box"></div>
+                    </div>                
+                `;
+            }
+
+            document.getElementById('app').innerHTML = /*HTML*/`
+                <h3>Farger</h3>
+                <button onclick="undo()">⤶</button>
+                ${createAddColorHtml()}
+                <hr/>
+                <div class="colors">
+                    ${html}
+                </div>
+            `;
+        }
+
+        function createAddColorHtml() {
+            if (isAdding) {
+                return /*HTML*/`
+                    <br/><input type="text"/>
+                    <button>Legg til ny farge</button>
+                    <button onclick="cancelAddColor()">Avbryt</button>                
+                `;
+            } else {
+                return /*HTML*/`
+                    <button onclick="startAdd()">+</button>
+                `;
+            }
+        }
+
+        // controller
+        function deleteColor(index) {
+            const elements = colors.splice(index, 1);
+            deleted.push(elements[0]);
+            updateView();
+        }
+
+        function undo() {
+            const color = deleted.pop();
+            colors.push(color);
+            updateView();
+        }
+
+        function startAdd() {
+            isAdding = true;
+            updateView();
+        }
+
+        function cancelAddColor(){
+            isAdding = false;
+            updateView();
+        }
+
+    </script>
 </body>
+
 </html>
