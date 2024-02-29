@@ -14,6 +14,13 @@
             border: 1px solid gray;
             margin: 10px;
         }
+
+        .topBox {
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            background-color: lightgray;
+        }
     </style>
 </head>
 
@@ -22,16 +29,17 @@
     <script>
         /*
             CRUD 
-            Create = lage, colors = ['red', 'green', 'blue', 'yellow']
-            Read 
+            Create = legge til ny
+            Read = vise (alle)
             Update 
-            Delete
+            Delete = slette en farge
         */
 
         // model
         let colors = ['red', 'green', 'blue', 'yellow'];
         let deleted = [];
         let isAdding = false;
+        let colorInput;
 
         // view
         updateView();
@@ -41,7 +49,10 @@
                 let color = colors[index];
                 html += /*HTML*/`
                     <div class="color">
-                        ${color} <button onclick="deleteColor(${index})">x</button>
+                        <div class="topBox">
+                            <div>${color}</div>
+                            <button onclick="deleteColor(${index})">x</button>
+                        </div>
                         <div style="background-color: ${color}" class="box"></div>
                     </div>                
                 `;
@@ -61,8 +72,13 @@
         function createAddColorHtml() {
             if (isAdding) {
                 return /*HTML*/`
-                    <br/><input type="text"/>
-                    <button>Legg til ny farge</button>
+                    <br/>
+                    <input 
+                        type="text" 
+                        oninput="colorInput=this.value" 
+                        value="${colorInput ?? ''}"
+                        />
+                    <button onclick="addColor()">Legg til ny farge</button>
                     <button onclick="cancelAddColor()">Avbryt</button>                
                 `;
             } else {
@@ -73,6 +89,14 @@
         }
 
         // controller
+        function addColor() {
+            if (!colorInput) return;
+            colors.push(colorInput);
+            isAdding = false;
+            colorInput = null;
+            updateView();
+        }
+
         function deleteColor(index) {
             const elements = colors.splice(index, 1);
             deleted.push(elements[0]);
@@ -90,7 +114,7 @@
             updateView();
         }
 
-        function cancelAddColor(){
+        function cancelAddColor() {
             isAdding = false;
             updateView();
         }
